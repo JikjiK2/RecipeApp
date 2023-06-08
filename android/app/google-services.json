@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "686533793342",
+    "project_id": "flutter-cook-app",
+    "storage_bucket": "flutter-cook-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:686533793342:android:e22c0feeb543cf79f4e36f",
+        "android_client_info": {
+          "package_name": "com.example.cook_app_project"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBGeJFc4oMCr1m-yQlq3QUzIRSv-abusNc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
