@@ -1,4 +1,8 @@
+import 'package:cook_app_project/src/provider/recipeApi_provider.dart';
+import 'package:cook_app_project/src/provider/recipe_provider.dart';
 import 'package:flutter/material.dart';
+
+late var cardindex;
 
 class RecipeInfoScreen extends StatefulWidget {
   const RecipeInfoScreen({super.key});
@@ -17,29 +21,12 @@ class MyBehavior extends ScrollBehavior {
 }
 
 class _RecipeInfoScreenState extends State<RecipeInfoScreen> {
-  var textLine = 2;
-  var textLine2 = 2;
+  var textLine = 30;
+  var textLine2 = 30;
 
-  late List<bool> _checkBox = [false, false, false, false, false, false];
+  // late List<bool> _checkBox = [false, false, false, false, false, false];
 
-  bool _showBackToTopButton = false;
-
-  // late ScrollController _scrollController;
-
-  // void _scrollToTop() {
-  //   _scrollController.jumpTo(0);
-  // }
-
-  // @override
-  // void initState() {
-  //   setState(() {
-  //     if (_scrollController.offset >= 400) {
-  //       _showBackToTopButton = true; // show the back-to-top button
-  //     } else {
-  //       _showBackToTopButton = false; // hide the back-to-top button
-  //     }
-  //   });
-  // }
+  // bool _showBackToTopButton = false;
 
   @override
   Widget build(BuildContext context) {
@@ -74,7 +61,7 @@ class _RecipeInfoScreenState extends State<RecipeInfoScreen> {
                   GestureDetector(
                     onTap: () {},
                     child: Container(
-                      child: Image.network("https://fakeimg.pl/500x400"),
+                      child: Image.network(cookImg[cardindex]),
                     ),
                   ),
                   Padding(
@@ -90,42 +77,17 @@ class _RecipeInfoScreenState extends State<RecipeInfoScreen> {
                               children: [
                                 Row(
                                   children: [
-                                    Text(
-                                      "요리이름",
-                                      style: TextStyles.bFont,
+                                    Expanded(
+                                      child: Text(
+                                        "${cook[cardindex]}",
+                                        maxLines: 3,
+                                        style: TextStyles.bFont,
+                                      ),
                                     ),
                                   ],
                                 ),
                                 const SizedBox(
                                   height: 10.0,
-                                ),
-                                Container(
-                                  padding: EdgeInsets.only(left: 15.0),
-                                  child: InkWell(
-                                    splashFactory: NoSplash.splashFactory,
-                                    onTap: () {
-                                      if (textLine == 2) {
-                                        textLine = 30;
-                                      } else {
-                                        textLine = 2;
-                                      }
-                                      setState(() {});
-                                    },
-                                    child: RichText(
-                                      overflow: TextOverflow.ellipsis,
-                                      maxLines: textLine,
-                                      strutStyle: StrutStyle(fontSize: 16.0),
-                                      text: TextSpan(
-                                          text:
-                                              '요리 설명입니다 요리 설명입니다요리 설명입니다요리 설명입니다요리 설명입니다요리 설명입니다요리 설명입니다요리 설명입니다요리 설명입니다요리 설명입니다요리 설명입니다요리 설명입니다.',
-                                          style: TextStyle(
-                                              color: Colors.black,
-                                              height: 1.4,
-                                              fontSize: 16.0,
-                                              fontFamily:
-                                                  'NanumSquareRegular')),
-                                    ),
-                                  ),
                                 ),
                               ],
                             ),
@@ -150,38 +112,64 @@ class _RecipeInfoScreenState extends State<RecipeInfoScreen> {
                                 const SizedBox(
                                   height: 10.0,
                                 ),
-                                Column(
-                                  children: [
-                                    for (int i = 0; i < 6; i++)
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Row(
-                                            children: [
-                                              Checkbox(
-                                                activeColor: Colors.black,
-                                                value: _checkBox[i],
-                                                onChanged: (value) {
-                                                  setState(() {
-                                                    _checkBox[i] = value!;
-                                                  });
-                                                },
-                                              ),
-                                              Text(
-                                                "요리 재료${i + 1}",
-                                                style: TextStyles.sFont,
-                                              ),
-                                            ],
-                                          ),
-                                          Text(
-                                            "300g",
-                                            style: TextStyles.sFont,
-                                          ),
-                                        ],
-                                      ),
-                                  ],
-                                )
+                                Container(
+                                  padding: EdgeInsets.only(left: 15.0),
+                                  child: InkWell(
+                                    splashFactory: NoSplash.splashFactory,
+                                    onTap: () {
+                                      if (textLine == 2) {
+                                        textLine = 30;
+                                      } else {
+                                        textLine = 2;
+                                      }
+                                      setState(() {});
+                                    },
+                                    child: RichText(
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: textLine,
+                                      strutStyle: StrutStyle(fontSize: 16.0),
+                                      text: TextSpan(
+                                          text: "${inList[cardindex]}",
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                            height: 1.4,
+                                            fontSize: 16.0,
+                                          )),
+                                    ),
+                                  ),
+                                ),
+                                // Column(
+                                //   children: [
+                                //     for (int i = 0; i < 6; i++)
+                                //       Row(
+                                //         mainAxisAlignment:
+                                //             MainAxisAlignment.spaceBetween,
+                                //         children: [
+                                //           Row(
+                                //             children: [
+                                //               Checkbox(
+                                //                 activeColor: Colors.black,
+                                //                 value: _checkBox[i],
+                                //                 onChanged: (value) {
+                                //                   setState(() {
+                                //                     _checkBox[i] = value!;
+                                //                   });
+                                //                 },
+                                //               ),
+                                //               Text(
+                                //                 "요리 재료${i + 1}",
+                                //                 style: TextStyles.sFont,
+                                //               ),
+                                //             ],
+                                //           ),
+                                //           Text(
+                                //             "300g",
+                                //             style: TextStyles.sFont,
+                                //           ),
+                                //         ],
+                                //       ),
+                                //   ],
+                                // )
                               ],
                             ),
                           ),
@@ -201,45 +189,43 @@ class _RecipeInfoScreenState extends State<RecipeInfoScreen> {
                               ],
                             ),
                           ),
-                          for (int i = 0; i < 6; i++)
-                            Container(
-                              padding:
-                                  EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 20.0),
-                              child: Column(
-                                children: [
-                                  Container(
-                                    padding: EdgeInsets.fromLTRB(
-                                        10.0, 0.0, 10.0, 15.0),
-                                    child: InkWell(
-                                      splashFactory: NoSplash.splashFactory,
-                                      onTap: () {
-                                        if (textLine2 == 2) {
-                                          textLine2 = 30;
-                                        } else {
-                                          textLine2 = 2;
-                                        }
-                                        setState(() {});
-                                      },
-                                      child: RichText(
-                                        overflow: TextOverflow.ellipsis,
-                                        softWrap: false,
-                                        maxLines: textLine2,
-                                        strutStyle: StrutStyle(fontSize: 20.0),
-                                        text: TextSpan(
-                                          text:
-                                              '${i + 1} 번째 조리 내용입니다 조리 내용입니다 조리 내용입니다 조리 내용입니다 조리 내용입니다 조리 내용입니다 조리 내용입니다.',
-                                          style: TextStyle(
-                                              color: Colors.black,
-                                              height: 1.4,
-                                              fontSize: 16.0,
-                                              fontFamily: 'NanumSquareRegular'),
+                          for (int index = 0;
+                              index < MaList[cardindex].length - 1;
+                              index++)
+                            Column(
+                              children: [
+                                Container(
+                                  padding: EdgeInsets.fromLTRB(
+                                      10.0, 0.0, 10.0, 15.0),
+                                  child: InkWell(
+                                    splashFactory: NoSplash.splashFactory,
+                                    onTap: () {
+                                      if (textLine2 == 2) {
+                                        textLine2 = 30;
+                                      } else {
+                                        textLine2 = 2;
+                                      }
+                                      setState(() {});
+                                    },
+                                    child: RichText(
+                                      overflow: TextOverflow.ellipsis,
+                                      softWrap: false,
+                                      maxLines: textLine2,
+                                      strutStyle: StrutStyle(fontSize: 20.0),
+                                      text: TextSpan(
+                                        text: '${MaList[cardindex][index]}',
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          height: 1.4,
+                                          fontSize: 16.0,
                                         ),
                                       ),
                                     ),
                                   ),
-                                  Image.network("https://fakeimg.pl/300x300"),
-                                ],
-                              ),
+                                ),
+                                Image.network("https://fakeimg.pl/300x300"),
+                                // Image.network("${MaImg[cardindex][index]}"),
+                              ],
                             ),
                         ],
                       ),

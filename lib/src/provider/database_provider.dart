@@ -12,10 +12,15 @@ class DatabaseProvider extends ChangeNotifier {
 
   String get name => _user.name;
   String get email => _user.email;
-  get abc => _user.abc;
+  String get nickname => _user.nickname;
 
   void setName(String name) {
     _user.setname(name);
+    notifyListeners();
+  }
+
+  void printEmail() {
+    print(_user.email);
     notifyListeners();
   }
 
@@ -24,8 +29,13 @@ class DatabaseProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void Plus() {
-    _user.plus();
+  void setNickname(String nickname) {
+    _user.setnickName(nickname);
+    notifyListeners();
+  }
+
+  void clearEmail() {
+    _user.setemail("");
     notifyListeners();
   }
 
@@ -40,91 +50,147 @@ class DatabaseProvider extends ChangeNotifier {
       return "fail";
     }
     print('login');
+    setEmail(email);
+    notifyListeners();
     // authPersistence(); // 인증 영속
     return "login";
+  }
+
+  Future<String> SignUp(String email, String pw) async {
+    if (email == "" || pw == "") {
+      return "null";
+    }
+    try {
+      final newUser =
+          await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: email.trim(),
+        password: pw,
+      );
+      newUser.user?.updateDisplayName("userName");
+      print('회원가입 성공');
+      return "success";
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'weak-password') {
+        print('비밀번호 취약');
+        return "password-weak";
+      } else if (e.code == 'email-already-in-use') {
+        print('이메일 중복');
+        return "email-exists";
+      }
+      return "";
+    }
   }
 
   void signOut() async {
     await FirebaseAuth.instance.signOut();
   }
 
-  void Login(String id, String pw) {
-    final _db = FirebaseFirestore.instance.collection('users').doc().get();
-
-    print(_db);
-    final db = FirebaseFirestore.instance.collection('users');
-    db.where("ID", isEqualTo: id).where("Password", isEqualTo: pw).get().then(
-      (querySnapshot) {
-        print(id + ":" + pw);
-        if (querySnapshot.docs.length == 1) {
-          //print(querySnapshot);
-          print("로그인 성공!!!");
-        } else {
-          print("로그인 실패...");
-        }
-      },
-    );
-    //_user = UserModel(ID: id,name: id,);
-    //notifyListeners();
-  }
-
-  void logout() {
-    // 로그아웃 처리 로직을 구현합니다.
-    // 사용자 정보를 초기화하고 notifyListeners()를 호출하여 UI에 변경 사항을 알립니다.
-    //_user = null;
-    notifyListeners();
-  }
-
-  bool IDcheck(String id) {
-    final db = FirebaseFirestore.instance.collection('users');
-    bool temp = true;
-    db.where("ID", isEqualTo: id).get().then(
-      (querySnapshot) {
-        if (querySnapshot.docs.length == 1) {
-          temp = false;
-          print(temp);
-        } else {
-          temp = true;
-          print(temp);
-        }
-        print(querySnapshot.docs.length);
-      },
-    );
-    print(temp);
-    return temp;
-  }
-
-  bool? Nickcheck(String nickName) {
-    final db = FirebaseFirestore.instance.collection('users');
-    db.where("NickName", isEqualTo: nickName).get().then(
-      (querySnapshot) {
-        if (querySnapshot.docs.length == 1) {
-          print("아이디 중복...");
-          return false;
-        } else {
-          print("아이디 사용가능!!!");
-          return true;
-        }
-      },
-    );
-    return null;
-  }
-
-  void SignUp(
-      String id, String pw, String name, String nickName, String email) {
-    final db = FirebaseFirestore.instance.collection('users');
-    bool IDcheck = false;
-    bool Nickcheck = false;
-    if (IDcheck == true && Nickcheck == true) {
-      db.add({
-        "ID": id,
-        "Password": pw,
-        "Name": name,
-        "NickName": nickName,
-        "Email": email
-      });
+  @override
+  Future<String> resetPassword(String email) async {
+    if (email == "") {
+      return "null";
     }
-    //_user = UserModel();
+    try {
+      final auth =
+          await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+      return "reset";
+    } on FirebaseAuthException {
+      return "fail";
+    }
+  }
+
+  Future<String> authState() async {
+    var temp = false;
+    FirebaseAuth.instance.idTokenChanges().listen((User? user) {
+      if (user == null) {
+        print('User is currently signed out!');
+      } else {
+        print('User is signed in!');
+        temp = true;
+      }
+    });
+    if (temp)
+      return "true";
+    else
+      return "false";
+  }
+
+  Future<String> EmailSearch(String name, String phone) async {
+    if (name == "" || phone == "") {
+      return "null";
+    }
+    final db = FirebaseFirestore.instance;
+    var temp = false;
+    try {
+      await db
+          .collection("users")
+          .where("Name", isEqualTo: name)
+          .where("PhoneNumber", isEqualTo: phone)
+          .get()
+          .then((querySnapshot) {
+        print(querySnapshot.size);
+        if (querySnapshot.size == 0) {
+          _user.setemail("");
+          print(_user.email);
+        } else {
+          for (var docSnapshot in querySnapshot.docs) {
+            _user.setemail(docSnapshot.get("Email"));
+            print(_user.email);
+            temp = true;
+          }
+        }
+      });
+    } on FirebaseException catch (e) {
+      _user.setemail("");
+      print(e);
+    }
     notifyListeners();
+    if (temp) {
+      return "true";
+    } else {
+      return "false";
+    }
+  }
+
+  Future<String> NickSearch(String email) async {
+    final db = FirebaseFirestore.instance;
+    var temp = false;
+    try {
+      await db
+          .collection("users")
+          .where("Email", isEqualTo: email)
+          .get()
+          .then((querySnapshot) {
+        print(querySnapshot.size);
+        if (querySnapshot.size == 0) {
+          _user.setnickName("");
+        } else {
+          for (var docSnapshot in querySnapshot.docs) {
+            // print(docSnapshot.get("NickName"));
+            _user.setnickName(docSnapshot.get("NickName"));
+            temp = true;
+          }
+        }
+      });
+    } on FirebaseException catch (e) {
+      _user.setnickName("");
+      print(e);
+    }
+    notifyListeners();
+    if (temp) {
+      return "true";
+    } else {
+      return "false";
+    }
+  }
+
+  void SignUpDB(String email, String name, String nickName, String phone) {
+    final db = FirebaseFirestore.instance.collection('users');
+    db.add({
+      "Email": email,
+      "Name": name,
+      "NickName": nickName,
+      "PhoneNumber": phone,
+    });
   }
 }

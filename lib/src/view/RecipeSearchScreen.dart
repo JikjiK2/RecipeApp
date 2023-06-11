@@ -1,4 +1,6 @@
+import 'package:cook_app_project/src/view/SearchListScreen.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class RecipeSearchScreen extends StatefulWidget {
   @override
@@ -8,6 +10,8 @@ class RecipeSearchScreen extends StatefulWidget {
 class _RecipeSearchScreenState extends State<RecipeSearchScreen> {
   @override
   Widget build(BuildContext context) {
+    final TextEditingController SearchController = TextEditingController();
+
     return Scaffold(
       //resizeToAvoidBottomInset: false,
       appBar: AppBar(
@@ -29,6 +33,7 @@ class _RecipeSearchScreenState extends State<RecipeSearchScreen> {
             Flexible(
               flex: 1,
               child: TextFormField(
+                controller: SearchController,
                 maxLines: 1,
                 keyboardType: TextInputType.emailAddress,
                 autocorrect: false,
@@ -55,7 +60,19 @@ class _RecipeSearchScreenState extends State<RecipeSearchScreen> {
               style: const ButtonStyle(
                 splashFactory: NoSplash.splashFactory,
               ),
-              onPressed: () {},
+              onPressed: () {
+                final String word = SearchController.text;
+                if (word == "") {
+                  showCustom(context, "검색어를 입력해주세요.");
+                } else {
+                  SearchWord = word;
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (BuildContext context) =>
+                              SerachListScreen()));
+                }
+              },
               icon: const Icon(Icons.search),
               color: Colors.black,
             ),
@@ -81,4 +98,34 @@ class _RecipeSearchScreenState extends State<RecipeSearchScreen> {
       ),
     );
   }
+}
+
+//toastmessage
+showCustom(BuildContext context, String msg) {
+  FToast fToast = FToast();
+  fToast.init(context);
+  Widget toast = Container(
+    padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+    decoration: BoxDecoration(
+      borderRadius: BorderRadius.circular(15.0),
+      color: Color.fromRGBO(0, 0, 0, 0.57),
+    ),
+    child: Row(
+      mainAxisSize: MainAxisSize.max,
+      children: [
+        Expanded(
+          child: Text(
+            msg,
+            textAlign: TextAlign.center,
+            style: TextStyle(color: Colors.white),
+          ),
+        ),
+      ],
+    ),
+  );
+  fToast.showToast(
+    child: toast,
+    toastDuration: const Duration(seconds: 2),
+    gravity: ToastGravity.BOTTOM,
+  );
 }

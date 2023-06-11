@@ -1,5 +1,8 @@
+import 'package:cook_app_project/src/provider/database_provider.dart';
+import 'package:cook_app_project/src/view/LoginScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:provider/provider.dart';
 
 class RegisterScreen extends StatefulWidget {
   @override
@@ -17,18 +20,21 @@ class MyBehavior extends ScrollBehavior {
 class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController EmailController = TextEditingController();
   final TextEditingController PWController = TextEditingController();
+  final TextEditingController PWCKController = TextEditingController();
   final TextEditingController NameController = TextEditingController();
+  final TextEditingController PhoneController = TextEditingController();
   final TextEditingController NickNameController = TextEditingController();
 
   bool _passwordVisible = true;
 
-  // DatabaseProvider db = DatabaseProvider();
+  DatabaseProvider? db;
 
   bool PWcheck = false;
 
   @override
   Widget build(BuildContext context) {
-    // db = Provider.of<DatabaseProvider>(context);
+    db = Provider.of<DatabaseProvider>(context, listen: false);
+
     return Scaffold(
       body: Center(
         child: Padding(
@@ -80,7 +86,41 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   const SizedBox(
                     height: 10.0,
                   ),
-                  EmailInput(),
+                  TextFormField(
+                    maxLines: 1,
+                    keyboardType: TextInputType.emailAddress,
+                    autocorrect: false,
+                    decoration: InputDecoration(
+                        contentPadding:
+                            EdgeInsets.symmetric(vertical: 20, horizontal: 15),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(5.0),
+                          borderSide:
+                              BorderSide(color: Colors.black, width: 2.0),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(5.0),
+                            borderSide: BorderSide(
+                                color: Color.fromRGBO(125, 125, 125, 0.4),
+                                width: 2.0)),
+                        hintText: '이메일 주소',
+                        suffixIcon: EmailController.text.length > 0
+                            ? IconButton(
+                                icon: Icon(Icons.cancel),
+                                color: Colors.grey,
+                                highlightColor: Colors.transparent,
+                                splashColor: Colors.transparent,
+                                onPressed: () {
+                                  EmailController.clear();
+                                  setState(() {});
+                                },
+                              )
+                            : null),
+                    controller: EmailController,
+                    onChanged: (text) {
+                      setState(() {});
+                    },
+                  ),
                   const SizedBox(
                     height: 15.0,
                   ),
@@ -101,7 +141,41 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   const SizedBox(
                     height: 10.0,
                   ),
-                  PasswordInput(),
+                  TextFormField(
+                    style: TextStyle(fontFamily: ''),
+                    maxLines: 1,
+                    keyboardType: TextInputType.visiblePassword,
+                    autocorrect: false,
+                    obscureText: _passwordVisible,
+                    decoration: InputDecoration(
+                      contentPadding:
+                          EdgeInsets.symmetric(vertical: 20, horizontal: 15),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5.0),
+                        borderSide: BorderSide(color: Colors.black, width: 2.0),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(5.0),
+                          borderSide: BorderSide(
+                              color: Color.fromRGBO(125, 125, 125, 0.4),
+                              width: 2.0)),
+                      hintText: '비밀번호 6자리 이상',
+                      suffixIcon: IconButton(
+                        icon: _passwordVisible
+                            ? Icon(Icons.visibility_off)
+                            : Icon(Icons.visibility),
+                        color: Colors.grey,
+                        highlightColor: Colors.transparent,
+                        splashColor: Colors.transparent,
+                        onPressed: (() {
+                          setState(() {
+                            _passwordVisible = !_passwordVisible;
+                          });
+                        }),
+                      ),
+                    ),
+                    controller: PWController,
+                  ),
                   const SizedBox(
                     height: 15.0,
                   ),
@@ -122,7 +196,41 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   const SizedBox(
                     height: 10.0,
                   ),
-                  PasswordInput(),
+                  TextFormField(
+                    style: TextStyle(fontFamily: ''),
+                    maxLines: 1,
+                    keyboardType: TextInputType.visiblePassword,
+                    autocorrect: false,
+                    obscureText: _passwordVisible,
+                    decoration: InputDecoration(
+                      contentPadding:
+                          EdgeInsets.symmetric(vertical: 20, horizontal: 15),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5.0),
+                        borderSide: BorderSide(color: Colors.black, width: 2.0),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(5.0),
+                          borderSide: BorderSide(
+                              color: Color.fromRGBO(125, 125, 125, 0.4),
+                              width: 2.0)),
+                      hintText: '비밀번호 확인',
+                      suffixIcon: IconButton(
+                        icon: _passwordVisible
+                            ? Icon(Icons.visibility_off)
+                            : Icon(Icons.visibility),
+                        color: Colors.grey,
+                        highlightColor: Colors.transparent,
+                        splashColor: Colors.transparent,
+                        onPressed: (() {
+                          setState(() {
+                            _passwordVisible = !_passwordVisible;
+                          });
+                        }),
+                      ),
+                    ),
+                    controller: PWCKController,
+                  ),
                   const SizedBox(
                     height: 15.0,
                   ),
@@ -156,7 +264,42 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   Row(
                     children: [
                       const Text(
+                        "휴대 전화 번호",
+                      ),
+                      const SizedBox(
+                        width: 10.0,
+                      ),
+                      const Text(
+                        "*필수",
+                        style: TextStyle(color: Colors.red, fontSize: 10),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 10.0,
+                  ),
+                  TextField(
+                    keyboardType: TextInputType.number,
+                    controller: PhoneController,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      hintText: "휴대 전화 번호",
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 15.0,
+                  ),
+                  Row(
+                    children: [
+                      const Text(
                         "닉네임",
+                      ),
+                      const SizedBox(
+                        width: 10.0,
+                      ),
+                      const Text(
+                        "*필수",
+                        style: TextStyle(color: Colors.red, fontSize: 10),
                       ),
                     ],
                   ),
@@ -205,8 +348,26 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       onPressed: () {
                         final String Email = EmailController.text;
                         final String PW = PWController.text;
+                        final String name = NameController.text;
+                        final String nickName = NickNameController.text;
+                        final String phone = PhoneController.text;
 
-                        // final login = db.SignIn(Email, PW).then((value) => {});
+                        final signUp = db!.SignUp(Email, PW).then((value) => {
+                              if (value == "null")
+                                {showCustom(context, "빈칸을 입력해주세요.")}
+                              else if (value == "success")
+                                {
+                                  showCustom(context, "회원가입에 성공하셨습니다."),
+                                  db!.SignUpDB(Email, name, nickName, phone),
+                                  Navigator.pop(context)
+                                }
+                              else if (value == "password-weak")
+                                {showCustom(context, "비밀번호가 6자리 이상 입력해주세요.")}
+                              else if (value == "email-exists")
+                                {showCustom(context, "중복 사용 중인 이메일입니다.")}
+                              else
+                                showCustom(context, "빈칸을 다시 확인해주세요.")
+                            });
                       },
                       style: ElevatedButton.styleFrom(
                           splashFactory: NoSplash.splashFactory,

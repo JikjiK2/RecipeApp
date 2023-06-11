@@ -4,9 +4,11 @@ import 'package:cook_app_project/src/view/RecipeSearchScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class RecipeListScreen extends StatefulWidget {
+String? SearchWord;
+
+class SerachListScreen extends StatefulWidget {
   @override
-  _RecipeListScreenState createState() => _RecipeListScreenState();
+  _SerachListScreenState createState() => _SerachListScreenState();
 }
 
 //overscroll glow 애니메이션 끄기
@@ -18,7 +20,7 @@ class MyBehavior extends ScrollBehavior {
   }
 }
 
-class _RecipeListScreenState extends State<RecipeListScreen> {
+class _SerachListScreenState extends State<SerachListScreen> {
   @override
   void initState() {
     super.initState();
@@ -35,8 +37,14 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
 
     final loading = provider.loading;
 
+    List<int> indexList = [];
+    for (int i = 0; i < cache.length; i++) {
+      if (cache[i].contains(SearchWord!)) {
+        indexList.add(i);
+      }
+    }
     //로딩중이면서 캐시에 아무것도 없음
-    if (loading && cache.length == 0) {
+    if (loading && indexList.length == 0) {
       return Center(
         child: CircularProgressIndicator(
           //backgroundColor: Colors.black,
@@ -47,17 +55,20 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
 
     //로딩중이 아닌데 캐시에 아무것도 없음
     //아무것도 가져올 아이템이 없을때
-    if (!loading && cache.length == 0) {
+    if (!loading && indexList.length == 0) {
       return Center(
-        child: Text('아이템이 없습니다.'),
+        child: Text(
+          '관련된 레시피가 없습니다.',
+          style: TextStyle(fontSize: 20),
+        ),
       );
     }
 
     return ListView.builder(
       padding: EdgeInsets.zero,
-      itemCount: cache.length + 1,
+      itemCount: indexList.length,
       itemBuilder: (context, index) {
-        if (index < cache.length) {
+        if (index < indexList.length) {
           return Card(
             elevation: 2,
             child: InkWell(
@@ -96,48 +107,12 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
                           ),
                           Padding(
                             padding: EdgeInsets.only(left: 5.0),
-                            child: Text(cache[index].toString(),
+                            child: Text(cache[indexList[index]].toString(),
                                 style: TextStyle(fontSize: 20)),
                           ),
                           const SizedBox(
                             height: 5,
                           ),
-                          // Padding(
-                          //   padding: EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 0),
-                          //   child: Text(
-                          //     "요리 부가 설명입니다. 요리 부가 설명입니다. 요리 부가 설명입니다. 요리 부가 설명입니다.",
-                          //     overflow: TextOverflow.ellipsis,
-                          //     softWrap: false,
-                          //     maxLines: 2,
-                          //     style: TextStyle(
-                          //       fontSize: 10,
-                          //       color: Color.fromRGBO(0, 0, 0, 0.6),
-                          //     ),
-                          //   ),
-                          // ),
-                          // const SizedBox(
-                          //   height: 15.0,
-                          // ),
-                          // Container(
-                          //   child: Row(
-                          //     children: [
-                          //       Padding(
-                          //         padding:
-                          //             EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
-                          //         child: Text(
-                          //           "작성자",
-                          //           overflow: TextOverflow.ellipsis,
-                          //           softWrap: false,
-                          //           maxLines: 2,
-                          //           style: TextStyle(
-                          //             fontSize: 12,
-                          //             color: Color.fromRGBO(0, 0, 0, 0.9),
-                          //           ),
-                          //         ),
-                          //       ),
-                          //     ],
-                          //   ),
-                          // ),
                         ],
                       ),
                     ),
@@ -182,6 +157,18 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
         floatHeaderSlivers: true,
         headerSliverBuilder: (context, innerBoxIsScrolled) => [
           SliverAppBar(
+            leading: Navigator.canPop(context)
+                ? IconButton(
+                    splashColor: Colors.transparent,
+                    splashRadius: 25,
+                    color: Colors.black,
+                    icon: const Icon(
+                      Icons.arrow_back,
+                    ),
+                    onPressed: () => Navigator.of(context)
+                        .popUntil((route) => route.isFirst),
+                  )
+                : null,
             backgroundColor: Colors.white,
             floating: true,
             snap: true,
@@ -225,7 +212,13 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
                   style: const ButtonStyle(
                     splashFactory: NoSplash.splashFactory,
                   ),
-                  onPressed: () {},
+                  onPressed: () {
+                    textFocus.unfocus();
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => RecipeSearchScreen()));
+                  },
                   icon: const Icon(Icons.search),
                   color: Colors.black,
                 ),

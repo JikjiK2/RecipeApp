@@ -1,4 +1,9 @@
+import 'package:cook_app_project/src/provider/database_provider.dart';
+import 'package:cook_app_project/src/view/EmailFailScreen.dart';
+import 'package:cook_app_project/src/view/EmailResultScreen.dart';
+import 'package:cook_app_project/src/view/LoginScreen.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class EmailSearchScreen extends StatefulWidget {
   const EmailSearchScreen({super.key});
@@ -10,9 +15,10 @@ class EmailSearchScreen extends StatefulWidget {
 class _EmailSearchScreenState extends State<EmailSearchScreen> {
   final TextEditingController EmailController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
-
+  DatabaseProvider? db;
   @override
   Widget build(BuildContext context) {
+    db = Provider.of<DatabaseProvider>(context, listen: false);
     return Scaffold(
         appBar: AppBar(
           leading: Navigator.canPop(context)
@@ -47,11 +53,49 @@ class _EmailSearchScreenState extends State<EmailSearchScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                EmailInput("이름"),
+                TextFormField(
+                  maxLines: 1,
+                  keyboardType: TextInputType.name,
+                  autocorrect: false,
+                  decoration: InputDecoration(
+                    contentPadding:
+                        EdgeInsets.symmetric(vertical: 20, horizontal: 15),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(5.0),
+                      borderSide: BorderSide(color: Colors.black, width: 2.0),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5.0),
+                        borderSide: BorderSide(
+                            color: Color.fromRGBO(125, 125, 125, 0.4),
+                            width: 2.0)),
+                    hintText: "이름",
+                  ),
+                  controller: EmailController,
+                ),
                 const SizedBox(
                   height: 20.0,
                 ),
-                EmailInput("휴대 전화 번호 '-' 없이"),
+                TextFormField(
+                  maxLines: 1,
+                  keyboardType: TextInputType.number,
+                  autocorrect: false,
+                  decoration: InputDecoration(
+                    contentPadding:
+                        EdgeInsets.symmetric(vertical: 20, horizontal: 15),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(5.0),
+                      borderSide: BorderSide(color: Colors.black, width: 2.0),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5.0),
+                        borderSide: BorderSide(
+                            color: Color.fromRGBO(125, 125, 125, 0.4),
+                            width: 2.0)),
+                    hintText: "휴대 전화 번호",
+                  ),
+                  controller: phoneController,
+                ),
                 const SizedBox(
                   height: 20.0,
                 ),
@@ -61,7 +105,36 @@ class _EmailSearchScreenState extends State<EmailSearchScreen> {
                   child: ElevatedButton(
                     onPressed: () {
                       final String Email = EmailController.text;
-                      final String phone = phoneController.text;
+                      final String Phone = phoneController.text;
+
+                      db!.EmailSearch(Email, Phone).then((value) => {
+                            if (value == "null")
+                              {showCustom(context, "빈칸을 입력해주세요.")}
+                            else if (value == "true")
+                              {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            EmailResultScreen()))
+                              }
+                            else if (value == "false")
+                              {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            EmailFailScreen()))
+                              }
+                            else
+                              {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            EmailFailScreen()))
+                              }
+                          });
                     },
                     style: ElevatedButton.styleFrom(
                         splashFactory: NoSplash.splashFactory,
@@ -77,40 +150,5 @@ class _EmailSearchScreenState extends State<EmailSearchScreen> {
             ),
           ),
         ));
-  }
-
-  Widget EmailInput(String msg) {
-    return TextFormField(
-      maxLines: 1,
-      keyboardType: TextInputType.emailAddress,
-      autocorrect: false,
-      decoration: InputDecoration(
-          contentPadding: EdgeInsets.symmetric(vertical: 20, horizontal: 15),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(5.0),
-            borderSide: BorderSide(color: Colors.black, width: 2.0),
-          ),
-          enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(5.0),
-              borderSide: BorderSide(
-                  color: Color.fromRGBO(125, 125, 125, 0.4), width: 2.0)),
-          hintText: msg,
-          suffixIcon: EmailController.text.length > 0
-              ? IconButton(
-                  icon: Icon(Icons.cancel),
-                  color: Colors.grey,
-                  highlightColor: Colors.transparent,
-                  splashColor: Colors.transparent,
-                  onPressed: () {
-                    EmailController.clear();
-                    setState(() {});
-                  },
-                )
-              : null),
-      controller: EmailController,
-      onChanged: (text) {
-        setState(() {});
-      },
-    );
   }
 }

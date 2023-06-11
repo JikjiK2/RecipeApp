@@ -1,15 +1,12 @@
 import 'package:cook_app_project/src/view/EmailSearchScreen.dart';
-import 'package:cook_app_project/src/view/MyProfileScreen.dart';
 import 'package:cook_app_project/src/view/PWSearchScreen.dart';
 import 'package:cook_app_project/src/view/RegisterScreen.dart';
 import 'package:cook_app_project/src/provider/database_provider.dart';
+import 'package:cook_app_project/src/view/bottom_navi.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 
-// await Firebase.initializeApp(
-//     options: DefaultFirebaseOptions.currentPlatform,
-// );
 class LoginScreen extends StatefulWidget {
   @override
   _LoginScreenState createState() => _LoginScreenState();
@@ -88,11 +85,12 @@ class _LoginScreenState extends State<LoginScreen> {
                               else if (value == "login")
                                 {
                                   showCustom(context, "로그인에 성공하셨습니다."),
+                                  auth = true,
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
                                           builder: (BuildContext context) =>
-                                              MyProfileScreen()))
+                                              Bottom_Navi()))
                                 }
                               else if (value == "fail")
                                 {showCustom(context, "이메일 또는 비밀번호를 다시 확인해주세요.")}

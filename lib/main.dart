@@ -1,9 +1,12 @@
+import 'package:cook_app_project/src/provider/Splash_provider.dart';
 import 'package:cook_app_project/src/provider/database_provider.dart';
+import 'package:cook_app_project/src/provider/recipeApi_provider.dart';
+import 'package:cook_app_project/src/provider/recipe_provider.dart';
+import 'package:cook_app_project/src/view/Splash.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:cook_app_project/src/provider/bottomNavi_provider.dart';
-import 'package:cook_app_project/src/view/bottom_navi.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -14,27 +17,33 @@ void main() async {
       onTap: () {
         FocusManager.instance.primaryFocus?.unfocus();
       },
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          textButtonTheme: TextButtonThemeData(
-            style: ButtonStyle(
-              splashFactory: NoSplash.splashFactory,
-              backgroundColor: MaterialStateColor.resolveWith(
-                  (states) => Colors.transparent),
-              foregroundColor:
-                  MaterialStateColor.resolveWith((states) => Colors.black),
+      child: MultiProvider(
+        providers: [
+          ChangeNotifierProvider(
+              create: (BuildContext context) => SplashProvider()),
+          ChangeNotifierProvider(
+              create: (BuildContext context) => DatabaseProvider()),
+          ChangeNotifierProvider(
+              create: (BuildContext context) => BottomNavigationProvider()),
+          ChangeNotifierProvider(
+              create: (BuildContext context) => RecipeListProvider()),
+          ChangeNotifierProvider(
+              create: (BuildContext context) => RecipeProvider()),
+        ],
+        child: MaterialApp(
+          debugShowCheckedModeBanner: false,
+          theme: ThemeData(
+            textButtonTheme: TextButtonThemeData(
+              style: ButtonStyle(
+                splashFactory: NoSplash.splashFactory,
+                backgroundColor: MaterialStateColor.resolveWith(
+                    (states) => Colors.transparent),
+                foregroundColor:
+                    MaterialStateColor.resolveWith((states) => Colors.black),
+              ),
             ),
           ),
-        ),
-        home: MultiProvider(
-          providers: [
-            ChangeNotifierProvider(
-                create: (BuildContext context) => DatabaseProvider()),
-            ChangeNotifierProvider(
-                create: (BuildContext context) => BottomNavigationProvider()),
-          ],
-          child: Bottom_Navi(),
+          home: Splash(),
         ),
       ),
     ),

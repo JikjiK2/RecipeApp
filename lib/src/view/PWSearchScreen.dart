@@ -1,4 +1,7 @@
+import 'package:cook_app_project/src/provider/database_provider.dart';
+import 'package:cook_app_project/src/view/LoginScreen.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class PWSearchScreen extends StatefulWidget {
   const PWSearchScreen({super.key});
@@ -9,10 +12,11 @@ class PWSearchScreen extends StatefulWidget {
 
 class _PWSearchScreenState extends State<PWSearchScreen> {
   final TextEditingController EmailController = TextEditingController();
-  final TextEditingController phoneController = TextEditingController();
+  DatabaseProvider? db;
 
   @override
   Widget build(BuildContext context) {
+    db = Provider.of<DatabaseProvider>(context, listen: false);
     return Scaffold(
         appBar: AppBar(
           leading: Navigator.canPop(context)
@@ -60,7 +64,20 @@ class _PWSearchScreenState extends State<PWSearchScreen> {
                   child: ElevatedButton(
                     onPressed: () {
                       final String Email = EmailController.text;
-                      final String phone = phoneController.text;
+                      final resetPW = db!.resetPassword(Email).then((value) => {
+                            if (value == "null")
+                              {showCustom(context, "이메일을 입력해주세요.")}
+                            else if (value == "reset")
+                              {
+                                showCustom(context, "입력하신 이메일 주소의 메일을 확인해주세요."),
+                                Navigator.pop(context)
+                              }
+                            else if (value == "fail")
+                              {showCustom(context, "입력하신 이메일을 다시 확인해주세요.")}
+                            else
+                              showCustom(context, "빈칸을 다시 확인해주세요.")
+                          });
+                      db!.resetPassword(Email);
                     },
                     style: ElevatedButton.styleFrom(
                         splashFactory: NoSplash.splashFactory,

@@ -1,4 +1,7 @@
+import 'package:cook_app_project/src/provider/recipeApi_provider.dart';
+import 'package:cook_app_project/src/view/RecipeInfoScreen.dart';
 import 'package:cook_app_project/src/view/RecipeSearchScreen.dart';
+import 'package:cook_app_project/src/view/Splash.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -12,7 +15,6 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      //resizeToAvoidBottomInset: false,
       appBar: AppBar(
         leading: Navigator.canPop(context)
             ? IconButton(
@@ -84,29 +86,59 @@ class _HomeScreenState extends State<HomeScreen> {
                 width: 300,
                 height: 300,
                 color: Colors.amber,
-                child: const Center(
-                  child: Text(
-                    "이미지",
-                    style: TextStyle(fontSize: 50.0),
-                  ),
+                child: Center(
+                  child: Text("이미지"),
+                  // Image.network("${cookImg[random]}"),
                 ),
               ),
               const SizedBox(
-                height: 40.0,
+                height: 30.0,
               ),
               const Text(
-                "오늘의 추천 요리",
+                "- 랜덤 추천 요리 -",
                 style: TextStyle(
-                  fontSize: 30.0,
+                  fontSize: 20.0,
                 ),
               ),
               const SizedBox(
-                height: 20.0,
+                height: 5.0,
               ),
-              const Text(
-                "--오늘의 추천 요리--",
-                style: TextStyle(
-                  fontSize: 35.0,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Expanded(
+                      child: Column(
+                    children: [
+                      Text(
+                        "${cook[random]}",
+                        maxLines: 3,
+                        style: TextStyle(
+                          fontSize: 30.0,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  )),
+                ],
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              TextButton(
+                style: TextButton.styleFrom(
+                    backgroundColor: Colors.amber,
+                    foregroundColor: Colors.black),
+                onPressed: () {
+                  cardindex = random;
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => RecipeInfoScreen()));
+                },
+                child: Text(
+                  "추천 레시피 보러가기",
+                  style: TextStyle(fontSize: 17),
                 ),
               ),
             ],

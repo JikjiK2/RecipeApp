@@ -1,15 +1,16 @@
 class UserModel {
-  String _name = "abc";
-  String _email = "123@naver.com";
-
-  int _abc = 0;
+  String _name = "";
+  String _email = "";
+  String _nickname = "";
+  String _phone = "";
 
   String get name => _name;
   String get email => _email;
-  get abc => _abc;
+  String get nickname => _nickname;
+  String get phone => _phone;
 
   String setname(String name) => _name = name;
   String setemail(String email) => _email = email;
-  int plus() => _abc++;
-  //UserModel({required this.name, required this.email});
+  String setnickName(String nickname) => _nickname = nickname;
+  String setphone(String phone) => _phone = phone;
 }
