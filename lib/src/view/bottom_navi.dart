@@ -1,14 +1,14 @@
+import 'package:cook_app_project/src/provider/database_provider.dart';
 import 'package:cook_app_project/src/view/HomeScreen.dart';
 import 'package:cook_app_project/src/view/LoginScreen.dart';
 import 'package:cook_app_project/src/provider/bottomNavi_provider.dart';
 import 'package:cook_app_project/src/view/MyProfileScreen.dart';
+import 'package:cook_app_project/src/view/Splash.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:cook_app_project/src/view/RecipeListScreen.dart';
-
-bool auth = false;
 
 class Bottom_Navi extends StatefulWidget {
   @override
@@ -16,14 +16,13 @@ class Bottom_Navi extends StatefulWidget {
 }
 
 class _Bottom_NaviState extends State<Bottom_Navi> {
+  DatabaseProvider? db;
   BottomNavigationProvider? bottomNavi;
 
   List pages = [RecipeListScreen(), HomeScreen(), LoginScreen()];
   List pages2 = [RecipeListScreen(), HomeScreen(), MyProfileScreen()];
   @override
   Widget build(BuildContext context) {
-    bottomNavi = Provider.of<BottomNavigationProvider>(context);
-
     Future<void> _onBackPressed(BuildContext context) async {
       await showDialog(
         context: context,
@@ -31,12 +30,12 @@ class _Bottom_NaviState extends State<Bottom_Navi> {
           title: const Text('종료하시겠습니까?'),
           actions: <Widget>[
             TextButton(
-              child: const Text('종료'),
-              onPressed: () => SystemNavigator.pop(),
-            ),
-            TextButton(
               child: const Text('돌아가기'),
               onPressed: () => Navigator.pop(context),
+            ),
+            TextButton(
+              child: const Text('종료'),
+              onPressed: () => SystemNavigator.pop(),
             ),
           ],
         ),
@@ -45,6 +44,8 @@ class _Bottom_NaviState extends State<Bottom_Navi> {
 
     final deviceWidth = MediaQuery.of(context).size.width;
     final deviceHeight = MediaQuery.of(context).size.height;
+
+    bottomNavi = Provider.of<BottomNavigationProvider>(context);
 
     return WillPopScope(
         onWillPop: () async {

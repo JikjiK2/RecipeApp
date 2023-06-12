@@ -1,6 +1,5 @@
 import 'package:cook_app_project/src/provider/database_provider.dart';
-import 'package:cook_app_project/src/view/LoginScreen.dart';
-import 'package:cook_app_project/src/view/bottom_navi.dart';
+import 'package:cook_app_project/src/view/SettingsScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -16,6 +15,8 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
   DatabaseProvider? db;
   @override
   Widget build(BuildContext context) {
+    final deviceWidth = MediaQuery.of(context).size.height;
+    final deviceHeight = MediaQuery.of(context).size.width;
     db = Provider.of<DatabaseProvider>(context, listen: false);
     return Scaffold(
       body: SingleChildScrollView(
@@ -25,60 +26,182 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
             Container(
               width: double.maxFinite,
               decoration: BoxDecoration(color: Colors.amber),
-              height: 200,
+              height: deviceHeight - 200,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(
-                    Icons.person,
-                    size: 90,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                        child: Consumer<DatabaseProvider>(
-                          builder: (_, user, __) => Text(
-                            "${user.nickname} ${user.email} ${user.name}",
-                            style: TextStyle(fontSize: 25),
+                  Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+                    IconButton(
+                      icon: Icon(
+                        Icons.settings,
+                        size: 35.0,
+                      ),
+                      onPressed: () => {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                    SettingsScreen()))
+                      },
+                    ),
+                  ]),
+                  Container(
+                    padding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 0),
+                    child: Row(
+                      children: [
+                        Container(
+                          padding: EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 10.0),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(100),
+                            border: Border.all(width: 2.0, color: Colors.black),
+                          ),
+                          child: Icon(
+                            Icons.person,
+                            size: 70,
                           ),
                         ),
-                      ),
-                    ],
-                  )
+                        Container(
+                          padding: EdgeInsets.fromLTRB(20.0, 0, 0, 0),
+                          child: Row(
+                            children: [
+                              Container(
+                                child: Consumer<DatabaseProvider>(
+                                  builder: (_, user, __) => Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Text(
+                                            "${user.name}",
+                                            style: TextStyle(fontSize: 22),
+                                          ),
+                                        ],
+                                      ),
+                                      const SizedBox(
+                                        height: 6.0,
+                                      ),
+                                      Row(
+                                        children: [
+                                          Text(
+                                            "${user.email}",
+                                            style: TextStyle(fontSize: 20),
+                                          ),
+                                        ],
+                                      ),
+                                      const SizedBox(
+                                        height: 6.0,
+                                      ),
+                                      Row(
+                                        children: [
+                                          Text(
+                                            "${user.nickname}",
+                                            style: TextStyle(fontSize: 20),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ],
               ),
             ),
-            const SizedBox(
-              height: 30.0,
-            ),
-            Padding(
-              padding: EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 0.0),
-              child: Center(
-                child: Container(
-                  width: double.infinity,
-                  height: 50,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      db!.signOut();
-                      showCustom(context, "로그아웃에 성공하셨습니다.");
-                      auth = false;
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (BuildContext context) =>
-                                  Bottom_Navi()));
-                    },
-                    style: ElevatedButton.styleFrom(
-                        splashFactory: NoSplash.splashFactory,
-                        backgroundColor: Colors.black,
-                        foregroundColor: Colors.white),
-                    child: Text(
-                      "로그아웃",
-                      style: TextStyle(fontSize: 18),
+            Container(
+              width: double.maxFinite,
+              decoration: BoxDecoration(color: Colors.transparent),
+              height: 200,
+              child: Column(
+                children: [
+                  InkWell(
+                    splashFactory: NoSplash.splashFactory,
+                    onTap: () {},
+                    child: Container(
+                      decoration: BoxDecoration(),
+                      padding: EdgeInsets.only(left: 15),
+                      height: 55,
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.notifications_outlined,
+                            size: 20.0,
+                          ),
+                          const SizedBox(
+                            width: 10.0,
+                          ),
+                          Text(
+                            "공지",
+                            style: TextStyle(fontSize: 20.0),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
+                  InkWell(
+                    splashFactory: NoSplash.splashFactory,
+                    onTap: () {},
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: Border(
+                          top: BorderSide(width: 1, color: Colors.grey),
+                        ),
+                      ),
+                      padding: EdgeInsets.only(left: 15),
+                      height: 55,
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.chat_bubble_outline,
+                            size: 20.0,
+                          ),
+                          const SizedBox(
+                            width: 10.0,
+                          ),
+                          Text(
+                            "문의",
+                            style: TextStyle(fontSize: 20.0),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  InkWell(
+                    splashFactory: NoSplash.splashFactory,
+                    onTap: () {},
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: Border(
+                          bottom: BorderSide(width: 1, color: Colors.grey),
+                          top: BorderSide(width: 1, color: Colors.grey),
+                        ),
+                      ),
+                      padding: EdgeInsets.only(left: 15),
+                      height: 55,
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.turned_in_not,
+                            size: 20.0,
+                          ),
+                          const SizedBox(
+                            width: 10.0,
+                          ),
+                          Text(
+                            "스크랩",
+                            style: TextStyle(fontSize: 20.0),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           ],

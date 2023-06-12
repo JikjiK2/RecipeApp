@@ -16,17 +16,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: Navigator.canPop(context)
-            ? IconButton(
-                splashColor: Colors.transparent,
-                splashRadius: 25,
-                color: Colors.black,
-                icon: const Icon(
-                  Icons.arrow_back,
-                ),
-                onPressed: () => Navigator.of(context).pop(),
-              )
-            : null,
+        automaticallyImplyLeading: false,
         elevation: 1,
         backgroundColor: Colors.white,
         title: Row(
@@ -85,10 +75,31 @@ class _HomeScreenState extends State<HomeScreen> {
               Container(
                 width: 300,
                 height: 300,
-                color: Colors.amber,
-                child: Center(
-                  child: Text("이미지"),
-                  // Image.network("${cookImg[random]}"),
+                decoration: BoxDecoration(
+                  border: Border.all(width: 1),
+                  borderRadius: BorderRadius.circular(20.0), //<-- SEE HERE
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(20.0),
+                  child: Image.network(
+                    "${cookImg[random]}",
+                    fit: BoxFit.cover,
+                    loadingBuilder: (BuildContext context, Widget child,
+                        ImageChunkEvent? loadingProgress) {
+                      if (loadingProgress == null) {
+                        return child;
+                      }
+                      return Center(
+                        child: CircularProgressIndicator(
+                          color: Colors.black,
+                          value: loadingProgress.expectedTotalBytes != null
+                              ? loadingProgress.cumulativeBytesLoaded /
+                                  loadingProgress.expectedTotalBytes!
+                              : null,
+                        ),
+                      );
+                    },
+                  ),
                 ),
               ),
               const SizedBox(

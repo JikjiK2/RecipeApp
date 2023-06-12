@@ -14,19 +14,20 @@ class _EmailResultScreenState extends State<EmailResultScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         elevation: 0,
-        backgroundColor: Colors.white10,
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            const SizedBox(
-              width: 8.0,
-            ),
-            const Text(
-              "이메일 찾기",
-              style: TextStyle(fontSize: 25, color: Colors.black),
-            ),
-          ],
+        backgroundColor: Colors.white,
+        title: Padding(
+          padding: EdgeInsets.only(left: 20.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              const Text(
+                "이메일 찾기",
+                style: TextStyle(fontSize: 25, color: Colors.black),
+              ),
+            ],
+          ),
         ),
       ),
       body: Center(
@@ -34,10 +35,13 @@ class _EmailResultScreenState extends State<EmailResultScreen> {
           padding: EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 50.0),
           child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
             Consumer<DatabaseProvider>(
-              builder: (_, user, __) => Text("이메일은 ${user.email} 입니다."),
+              builder: (_, user, __) => Text(
+                "이메일은 ${user.email} 입니다.",
+                style: TextStyle(fontSize: 20),
+              ),
             ),
             const SizedBox(
-              height: 20.0,
+              height: 40.0,
             ),
             Container(
               width: double.infinity,
@@ -52,7 +56,7 @@ class _EmailResultScreenState extends State<EmailResultScreen> {
                   foregroundColor: Colors.white,
                 ),
                 child: Text(
-                  "로그인",
+                  "로그인하러 가기",
                   style: TextStyle(fontSize: 18),
                 ),
               ),

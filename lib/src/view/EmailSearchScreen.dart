@@ -18,6 +18,8 @@ class _EmailSearchScreenState extends State<EmailSearchScreen> {
   DatabaseProvider? db;
   @override
   Widget build(BuildContext context) {
+    final String Email = EmailController.text;
+    final String Phone = phoneController.text;
     db = Provider.of<DatabaseProvider>(context, listen: false);
     return Scaffold(
         appBar: AppBar(
@@ -54,48 +56,52 @@ class _EmailSearchScreenState extends State<EmailSearchScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 TextFormField(
-                  maxLines: 1,
-                  keyboardType: TextInputType.name,
-                  autocorrect: false,
-                  decoration: InputDecoration(
-                    contentPadding:
-                        EdgeInsets.symmetric(vertical: 20, horizontal: 15),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(5.0),
-                      borderSide: BorderSide(color: Colors.black, width: 2.0),
-                    ),
-                    enabledBorder: OutlineInputBorder(
+                    maxLines: 1,
+                    keyboardType: TextInputType.name,
+                    autocorrect: false,
+                    decoration: InputDecoration(
+                      contentPadding:
+                          EdgeInsets.symmetric(vertical: 20, horizontal: 15),
+                      focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(5.0),
-                        borderSide: BorderSide(
-                            color: Color.fromRGBO(125, 125, 125, 0.4),
-                            width: 2.0)),
-                    hintText: "이름",
-                  ),
-                  controller: EmailController,
-                ),
+                        borderSide: BorderSide(color: Colors.black, width: 2.0),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(5.0),
+                          borderSide: BorderSide(
+                              color: Color.fromRGBO(125, 125, 125, 0.4),
+                              width: 2.0)),
+                      hintText: "이름",
+                    ),
+                    controller: EmailController,
+                    onChanged: (text) {
+                      setState(() {});
+                    }),
                 const SizedBox(
                   height: 20.0,
                 ),
                 TextFormField(
-                  maxLines: 1,
-                  keyboardType: TextInputType.number,
-                  autocorrect: false,
-                  decoration: InputDecoration(
-                    contentPadding:
-                        EdgeInsets.symmetric(vertical: 20, horizontal: 15),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(5.0),
-                      borderSide: BorderSide(color: Colors.black, width: 2.0),
-                    ),
-                    enabledBorder: OutlineInputBorder(
+                    maxLines: 1,
+                    keyboardType: TextInputType.number,
+                    autocorrect: false,
+                    decoration: InputDecoration(
+                      contentPadding:
+                          EdgeInsets.symmetric(vertical: 20, horizontal: 15),
+                      focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(5.0),
-                        borderSide: BorderSide(
-                            color: Color.fromRGBO(125, 125, 125, 0.4),
-                            width: 2.0)),
-                    hintText: "휴대 전화 번호",
-                  ),
-                  controller: phoneController,
-                ),
+                        borderSide: BorderSide(color: Colors.black, width: 2.0),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(5.0),
+                          borderSide: BorderSide(
+                              color: Color.fromRGBO(125, 125, 125, 0.4),
+                              width: 2.0)),
+                      hintText: "휴대 전화 번호  ' - ' 없이",
+                    ),
+                    controller: phoneController,
+                    onChanged: (text) {
+                      setState(() {});
+                    }),
                 const SizedBox(
                   height: 20.0,
                 ),
@@ -103,39 +109,38 @@ class _EmailSearchScreenState extends State<EmailSearchScreen> {
                   width: double.infinity,
                   height: 50,
                   child: ElevatedButton(
-                    onPressed: () {
-                      final String Email = EmailController.text;
-                      final String Phone = phoneController.text;
-
-                      db!.EmailSearch(Email, Phone).then((value) => {
-                            if (value == "null")
-                              {showCustom(context, "빈칸을 입력해주세요.")}
-                            else if (value == "true")
-                              {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            EmailResultScreen()))
-                              }
-                            else if (value == "false")
-                              {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            EmailFailScreen()))
-                              }
-                            else
-                              {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            EmailFailScreen()))
-                              }
-                          });
-                    },
+                    onPressed: (Email.length > 0 && Phone.length > 0)
+                        ? () => {
+                              db!.EmailSearch(Email, Phone).then((value) => {
+                                    if (value == "null")
+                                      {showCustom(context, "빈칸을 입력해주세요.")}
+                                    else if (value == "true")
+                                      {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    EmailResultScreen()))
+                                      }
+                                    else if (value == "false")
+                                      {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    EmailFailScreen()))
+                                      }
+                                    else
+                                      {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    EmailFailScreen()))
+                                      }
+                                  })
+                            }
+                        : null,
                     style: ElevatedButton.styleFrom(
                         splashFactory: NoSplash.splashFactory,
                         backgroundColor: Colors.black,

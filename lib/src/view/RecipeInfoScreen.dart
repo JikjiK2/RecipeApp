@@ -131,6 +131,7 @@ class _RecipeInfoScreenState extends State<RecipeInfoScreen> {
                                       text: TextSpan(
                                           text: "${inList[cardindex]}",
                                           style: TextStyle(
+                                            letterSpacing: 1.0,
                                             color: Colors.black,
                                             height: 1.4,
                                             fontSize: 16.0,
@@ -138,38 +139,6 @@ class _RecipeInfoScreenState extends State<RecipeInfoScreen> {
                                     ),
                                   ),
                                 ),
-                                // Column(
-                                //   children: [
-                                //     for (int i = 0; i < 6; i++)
-                                //       Row(
-                                //         mainAxisAlignment:
-                                //             MainAxisAlignment.spaceBetween,
-                                //         children: [
-                                //           Row(
-                                //             children: [
-                                //               Checkbox(
-                                //                 activeColor: Colors.black,
-                                //                 value: _checkBox[i],
-                                //                 onChanged: (value) {
-                                //                   setState(() {
-                                //                     _checkBox[i] = value!;
-                                //                   });
-                                //                 },
-                                //               ),
-                                //               Text(
-                                //                 "요리 재료${i + 1}",
-                                //                 style: TextStyles.sFont,
-                                //               ),
-                                //             ],
-                                //           ),
-                                //           Text(
-                                //             "300g",
-                                //             style: TextStyles.sFont,
-                                //           ),
-                                //         ],
-                                //       ),
-                                //   ],
-                                // )
                               ],
                             ),
                           ),
@@ -223,8 +192,45 @@ class _RecipeInfoScreenState extends State<RecipeInfoScreen> {
                                     ),
                                   ),
                                 ),
-                                Image.network("https://fakeimg.pl/300x300"),
-                                // Image.network("${MaImg[cardindex][index]}"),
+                                Container(
+                                  width: 300,
+                                  height: 300,
+                                  decoration: BoxDecoration(
+                                    border: Border.all(width: 1),
+                                    borderRadius: BorderRadius.circular(
+                                        20.0), //<-- SEE HERE
+                                  ),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(20.0),
+                                    child: Image.network(
+                                      "${MaImg[cardindex][index].toString().replaceRange(0, 1, '').replaceRange(MaImg[cardindex][index].toString().length - 2, MaImg[cardindex][index].toString().length - 1, '')}",
+                                      fit: BoxFit.cover,
+                                      loadingBuilder: (BuildContext context,
+                                          Widget child,
+                                          ImageChunkEvent? loadingProgress) {
+                                        if (loadingProgress == null) {
+                                          return child;
+                                        }
+                                        return Center(
+                                          child: CircularProgressIndicator(
+                                            color: Colors.black,
+                                            value: loadingProgress
+                                                        .expectedTotalBytes !=
+                                                    null
+                                                ? loadingProgress
+                                                        .cumulativeBytesLoaded /
+                                                    loadingProgress
+                                                        .expectedTotalBytes!
+                                                : null,
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 50.0,
+                                ),
                               ],
                             ),
                         ],

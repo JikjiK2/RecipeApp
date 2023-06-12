@@ -38,8 +38,8 @@ class _SerachListScreenState extends State<SerachListScreen> {
     final loading = provider.loading;
 
     List<int> indexList = [];
-    for (int i = 0; i < cache.length; i++) {
-      if (cache[i].contains(SearchWord!)) {
+    for (int i = 0; i < cook.length; i++) {
+      if (cook[i].contains(SearchWord!)) {
         indexList.add(i);
       }
     }
@@ -92,8 +92,42 @@ class _SerachListScreenState extends State<SerachListScreen> {
                         width: double.maxFinite,
                         height: double.maxFinite,
                         child: Center(
-                          child: Image.network("https://fakeimg.pl/500x500"),
-                          // Image.network(provider.cookListModel.imgList[index]),
+                          child: Container(
+                            width: 300,
+                            height: 300,
+                            decoration: BoxDecoration(
+                              border: Border.all(width: 1),
+                              borderRadius:
+                                  BorderRadius.circular(20.0), //<-- SEE HERE
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(20.0),
+                              child: Image.network(
+                                cookImg[indexList[index]],
+                                fit: BoxFit.cover,
+                                loadingBuilder: (BuildContext context,
+                                    Widget child,
+                                    ImageChunkEvent? loadingProgress) {
+                                  if (loadingProgress == null) {
+                                    return child;
+                                  }
+                                  return Center(
+                                    child: CircularProgressIndicator(
+                                      color: Colors.black,
+                                      value:
+                                          loadingProgress.expectedTotalBytes !=
+                                                  null
+                                              ? loadingProgress
+                                                      .cumulativeBytesLoaded /
+                                                  loadingProgress
+                                                      .expectedTotalBytes!
+                                              : null,
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
+                          ),
                         ),
                       ),
                     ),
@@ -107,7 +141,7 @@ class _SerachListScreenState extends State<SerachListScreen> {
                           ),
                           Padding(
                             padding: EdgeInsets.only(left: 5.0),
-                            child: Text(cache[indexList[index]].toString(),
+                            child: Text(cook[indexList[index]].toString(),
                                 style: TextStyle(fontSize: 20)),
                           ),
                           const SizedBox(

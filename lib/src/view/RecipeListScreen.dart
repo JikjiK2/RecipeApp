@@ -53,123 +53,125 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
       );
     }
 
-    return ListView.builder(
-      padding: EdgeInsets.zero,
-      itemCount: cache.length + 1,
-      itemBuilder: (context, index) {
-        if (index < cache.length) {
-          return Card(
-            elevation: 2,
-            child: InkWell(
-              splashFactory: NoSplash.splashFactory,
-              onTap: () {
-                cardindex = index;
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => RecipeInfoScreen()));
-              },
-              child: Container(
-                height: 300,
-                child: Column(
-                  children: [
-                    Flexible(
-                      flex: 4,
-                      child: Container(
-                        margin: EdgeInsets.all(8.0),
-                        // decoration: BoxDecoration(color: Colors.blueAccent),
-                        width: double.maxFinite,
-                        height: double.maxFinite,
-                        child: Center(
-                          child: Image.network("https://fakeimg.pl/500x500"),
-                          // Image.network(provider.cookListModel.imgList[index]),
+    return RefreshIndicator(
+      onRefresh: () async {
+        setState(() {});
+      },
+      child: ListView.builder(
+        padding: EdgeInsets.zero,
+        itemCount: cache.length + 1,
+        itemBuilder: (context, index) {
+          if (index < cache.length) {
+            return Card(
+              elevation: 2,
+              child: InkWell(
+                splashFactory: NoSplash.splashFactory,
+                onTap: () {
+                  cardindex = index;
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => RecipeInfoScreen()));
+                },
+                child: Container(
+                  height: 300,
+                  child: Column(
+                    children: [
+                      Flexible(
+                        flex: 4,
+                        child: Container(
+                          margin: EdgeInsets.all(8.0),
+                          // decoration: BoxDecoration(color: Colors.blueAccent),
+                          width: double.maxFinite,
+                          height: double.maxFinite,
+                          child: Center(
+                            child: Container(
+                              width: 300,
+                              height: 300,
+                              decoration: BoxDecoration(
+                                border: Border.all(width: 1),
+                                borderRadius: BorderRadius.circular(20.0),
+                              ),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(20.0),
+                                child: Image.network(
+                                  cookImg[index],
+                                  fit: BoxFit.cover,
+                                  loadingBuilder: (BuildContext context,
+                                      Widget child,
+                                      ImageChunkEvent? loadingProgress) {
+                                    if (loadingProgress == null) {
+                                      return child;
+                                    }
+                                    return Center(
+                                      child: CircularProgressIndicator(
+                                        color: Colors.black,
+                                        value: loadingProgress
+                                                    .expectedTotalBytes !=
+                                                null
+                                            ? loadingProgress
+                                                    .cumulativeBytesLoaded /
+                                                loadingProgress
+                                                    .expectedTotalBytes!
+                                            : null,
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+                            ),
+                          ),
                         ),
                       ),
-                    ),
-                    Flexible(
-                      flex: 1,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          const SizedBox(
-                            height: 15.0,
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(left: 5.0),
-                            child: Text(cache[index].toString(),
-                                style: TextStyle(fontSize: 20)),
-                          ),
-                          const SizedBox(
-                            height: 5,
-                          ),
-                          // Padding(
-                          //   padding: EdgeInsets.fromLTRB(15.0, 0.0, 15.0, 0),
-                          //   child: Text(
-                          //     "요리 부가 설명입니다. 요리 부가 설명입니다. 요리 부가 설명입니다. 요리 부가 설명입니다.",
-                          //     overflow: TextOverflow.ellipsis,
-                          //     softWrap: false,
-                          //     maxLines: 2,
-                          //     style: TextStyle(
-                          //       fontSize: 10,
-                          //       color: Color.fromRGBO(0, 0, 0, 0.6),
-                          //     ),
-                          //   ),
-                          // ),
-                          // const SizedBox(
-                          //   height: 15.0,
-                          // ),
-                          // Container(
-                          //   child: Row(
-                          //     children: [
-                          //       Padding(
-                          //         padding:
-                          //             EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
-                          //         child: Text(
-                          //           "작성자",
-                          //           overflow: TextOverflow.ellipsis,
-                          //           softWrap: false,
-                          //           maxLines: 2,
-                          //           style: TextStyle(
-                          //             fontSize: 12,
-                          //             color: Color.fromRGBO(0, 0, 0, 0.9),
-                          //           ),
-                          //         ),
-                          //       ),
-                          //     ],
-                          //   ),
-                          // ),
-                        ],
+                      Flexible(
+                        flex: 1,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            const SizedBox(
+                              height: 15.0,
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(left: 5.0),
+                              child: Text(cook[index].toString(),
+                                  style: TextStyle(fontSize: 20)),
+                            ),
+                            const SizedBox(
+                              height: 5,
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
-            ),
-          );
-        }
+            );
+          }
 
-        if (!provider.loading && provider.hasMore) {
-          Future.microtask(() {
-            provider.fetchItems(nextId: index);
-          });
-        }
+          if (!provider.loading && provider.hasMore) {
+            Future.microtask(() {
+              provider.fetchItems(nextId: index);
+            });
+          }
 
-        if (provider.hasMore) {
-          return Padding(
-            padding: EdgeInsets.all(5.0),
-            child: Center(
-              child: CircularProgressIndicator(
-                //backgroundColor: Colors.black,
-                color: Colors.black,
+          if (provider.hasMore) {
+            return Padding(
+              padding: EdgeInsets.all(5.0),
+              child: Center(
+                child: CircularProgressIndicator(
+                  //backgroundColor: Colors.black,
+                  color: Colors.black,
+                ),
               ),
-            ),
-          );
-        } else {
-          return Center(
-            child: Text('더이상 아이템이 없습니다.'),
-          );
-        }
-      },
+            );
+          } else {
+            return Center(
+              child: Text('더이상 아이템이 없습니다.'),
+            );
+          }
+        },
+      ),
     );
   }
 
@@ -182,6 +184,7 @@ class _RecipeListScreenState extends State<RecipeListScreen> {
         floatHeaderSlivers: true,
         headerSliverBuilder: (context, innerBoxIsScrolled) => [
           SliverAppBar(
+            automaticallyImplyLeading: false,
             backgroundColor: Colors.white,
             floating: true,
             snap: true,

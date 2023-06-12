@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cook_app_project/src/model/user.dart';
+import 'package:cook_app_project/src/view/Splash.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -51,6 +52,7 @@ class DatabaseProvider extends ChangeNotifier {
     }
     print('login');
     setEmail(email);
+    authState();
     notifyListeners();
     // authPersistence(); // 인증 영속
     return "login";
@@ -83,6 +85,7 @@ class DatabaseProvider extends ChangeNotifier {
 
   void signOut() async {
     await FirebaseAuth.instance.signOut();
+    auth = false;
   }
 
   @override
@@ -101,14 +104,47 @@ class DatabaseProvider extends ChangeNotifier {
 
   Future<String> authState() async {
     var temp = false;
+    var _user;
     FirebaseAuth.instance.idTokenChanges().listen((User? user) {
       if (user == null) {
         print('User is currently signed out!');
+        auth = false;
       } else {
+        _user = user.email.toString();
+        setEmail(_user);
         print('User is signed in!');
+        auth = true;
         temp = true;
       }
     });
+    try {
+      await FirebaseFirestore.instance
+          .collection("users")
+          .get()
+          .then((querySnapshot) {
+        if (querySnapshot.size == 0) {
+          this._user.setemail("");
+        } else {
+          for (var docSnapshot in querySnapshot.docs) {
+            if (_user == docSnapshot.get("Email")) {
+              this._user.setemail(docSnapshot.get("Email"));
+              this._user.setname(docSnapshot.get("Name"));
+              this._user.setnickName(docSnapshot.get("NickName"));
+              print(docSnapshot.get("Email"));
+              print(docSnapshot.get("Name"));
+              print(docSnapshot.get("NickName"));
+              notifyListeners();
+            }
+
+            temp = true;
+          }
+        }
+      });
+    } on FirebaseException catch (e) {
+      _user.setemail("");
+      print(e);
+    }
+    notifyListeners();
     if (temp)
       return "true";
     else
@@ -128,14 +164,12 @@ class DatabaseProvider extends ChangeNotifier {
           .where("PhoneNumber", isEqualTo: phone)
           .get()
           .then((querySnapshot) {
-        print(querySnapshot.size);
         if (querySnapshot.size == 0) {
           _user.setemail("");
-          print(_user.email);
         } else {
           for (var docSnapshot in querySnapshot.docs) {
             _user.setemail(docSnapshot.get("Email"));
-            print(_user.email);
+
             temp = true;
           }
         }
@@ -152,30 +186,64 @@ class DatabaseProvider extends ChangeNotifier {
     }
   }
 
-  Future<String> NickSearch(String email) async {
-    final db = FirebaseFirestore.instance;
-    var temp = false;
+  Future<String> UserNick() async {
+    var db = FirebaseFirestore.instance;
+    bool temp = false;
+    var _user;
+    FirebaseAuth.instance.idTokenChanges().listen((User? user) {
+      if (user == null) {
+      } else {
+        _user = user.email.toString();
+      }
+    });
+    db = FirebaseFirestore.instance;
     try {
       await db
           .collection("users")
-          .where("Email", isEqualTo: email)
+          .where("Email", isEqualTo: _user)
           .get()
           .then((querySnapshot) {
-        print(querySnapshot.size);
         if (querySnapshot.size == 0) {
-          _user.setnickName("");
+          temp = true;
         } else {
           for (var docSnapshot in querySnapshot.docs) {
-            // print(docSnapshot.get("NickName"));
-            _user.setnickName(docSnapshot.get("NickName"));
+            this._user.setnickName(docSnapshot.get("NickName"));
+            this._user.setname(docSnapshot.get("Name"));
             temp = true;
           }
+          temp = false;
         }
       });
     } on FirebaseException catch (e) {
-      _user.setnickName("");
       print(e);
     }
+    notifyListeners();
+    if (temp) {
+      return "true";
+    } else {
+      return "false";
+    }
+  }
+
+  Future<String> NickSearch(String nick) async {
+    final db = FirebaseFirestore.instance;
+    bool temp = false;
+    try {
+      await db
+          .collection("users")
+          .where("NickName", isEqualTo: nick)
+          .get()
+          .then((querySnapshot) {
+        if (querySnapshot.size == 0) {
+          temp = true;
+        } else {
+          temp = false;
+        }
+      });
+    } on FirebaseException catch (e) {
+      print(e);
+    }
+
     notifyListeners();
     if (temp) {
       return "true";

@@ -22,8 +22,15 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     final deviceWidth = MediaQuery.of(context).size.height;
     final deviceHeight = MediaQuery.of(context).size.width;
-
+    final String Email = EmailController.text;
+    final String PW = PWController.text;
     db = Provider.of<DatabaseProvider>(context, listen: false);
+
+    bool isValidEmailFormat(value) {
+      return RegExp(
+              r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+          .hasMatch(value);
+    }
 
     return GestureDetector(
       child: Scaffold(
@@ -43,61 +50,148 @@ class _LoginScreenState extends State<LoginScreen> {
                   const SizedBox(
                     height: 20.0,
                   ),
-                  Row(
-                    children: [
-                      const Text(
-                        "이메일 주소",
-                      ),
-                    ],
+                  Container(
+                    padding: EdgeInsets.fromLTRB(25.0, 0.0, 25.0, 0.0),
+                    child: Column(
+                      children: [
+                        Row(
+                          children: [
+                            const Text(
+                              "이메일 주소",
+                            ),
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 10.0,
+                        ),
+                        TextFormField(
+                          maxLines: 1,
+                          keyboardType: TextInputType.emailAddress,
+                          autocorrect: false,
+                          decoration: InputDecoration(
+                              contentPadding: EdgeInsets.symmetric(
+                                  vertical: 20, horizontal: 15),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(5.0),
+                                borderSide:
+                                    BorderSide(color: Colors.black, width: 2.0),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(5.0),
+                                  borderSide: BorderSide(
+                                      color: Color.fromRGBO(125, 125, 125, 0.4),
+                                      width: 2.0)),
+                              hintText: 'Email',
+                              suffixIcon: EmailController.text.length > 0
+                                  ? IconButton(
+                                      icon: Icon(Icons.cancel),
+                                      color: Colors.grey,
+                                      highlightColor: Colors.transparent,
+                                      splashColor: Colors.transparent,
+                                      onPressed: () {
+                                        EmailController.clear();
+                                        setState(() {});
+                                      },
+                                    )
+                                  : null),
+                          controller: EmailController,
+                          onChanged: (text) {
+                            setState(() {});
+                          },
+                        ),
+                      ],
+                    ),
                   ),
                   const SizedBox(
                     height: 10.0,
                   ),
-                  EmailInput(),
-                  const SizedBox(
-                    height: 10.0,
+                  Container(
+                    padding: EdgeInsets.fromLTRB(25.0, 0.0, 25.0, 0.0),
+                    child: Column(
+                      children: [
+                        Row(
+                          children: [
+                            const Text(
+                              "비밀번호",
+                            ),
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 10.0,
+                        ),
+                        TextFormField(
+                          style: TextStyle(fontFamily: ''),
+                          maxLines: 1,
+                          keyboardType: TextInputType.visiblePassword,
+                          autocorrect: false,
+                          obscureText: _passwordVisible,
+                          decoration: InputDecoration(
+                            contentPadding: EdgeInsets.symmetric(
+                                vertical: 20, horizontal: 15),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(5.0),
+                              borderSide:
+                                  BorderSide(color: Colors.black, width: 2.0),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(5.0),
+                                borderSide: BorderSide(
+                                    color: Color.fromRGBO(125, 125, 125, 0.4),
+                                    width: 2.0)),
+                            hintText: 'Password',
+                            suffixIcon: IconButton(
+                              icon: _passwordVisible
+                                  ? Icon(Icons.visibility_off)
+                                  : Icon(Icons.visibility),
+                              color: Colors.grey,
+                              highlightColor: Colors.transparent,
+                              splashColor: Colors.transparent,
+                              onPressed: (() {
+                                setState(() {
+                                  _passwordVisible = !_passwordVisible;
+                                });
+                              }),
+                            ),
+                          ),
+                          controller: PWController,
+                          onChanged: (text) {
+                            setState(() {});
+                          },
+                        ),
+                      ],
+                    ),
                   ),
-                  Row(
-                    children: [
-                      const Text(
-                        "비밀번호",
-                      ),
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 10.0,
-                  ),
-                  PasswordInput(),
                   const SizedBox(
                     height: 30.0,
                   ),
                   Container(
+                    padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
                     width: double.infinity,
                     height: 50,
                     child: ElevatedButton(
-                      onPressed: () {
-                        final String Email = EmailController.text;
-                        final String PW = PWController.text;
-
-                        final login = db!.SignIn(Email, PW).then((value) => {
-                              if (value == "null")
-                                {showCustom(context, "빈칸을 입력해주세요.")}
-                              else if (value == "login")
-                                {
-                                  showCustom(context, "로그인에 성공하셨습니다."),
-                                  auth = true,
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (BuildContext context) =>
-                                              Bottom_Navi()))
-                                }
-                              else if (value == "fail")
-                                {showCustom(context, "이메일 또는 비밀번호를 다시 확인해주세요.")}
-                              else
-                                showCustom(context, "이메일 또는 비밀번호를 다시 확인해주세요.")
-                            });
-                      },
+                      onPressed: (PW.length > 0 && Email.length > 0)
+                          ? () => db!.SignIn(Email, PW).then((value) => {
+                                if (value == "null")
+                                  {showCustom(context, "빈칸을 입력해주세요.")}
+                                else if (value == "login")
+                                  {
+                                    db!.authState(),
+                                    showCustom(context, "로그인에 성공하셨습니다."),
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (BuildContext context) =>
+                                                Bottom_Navi()))
+                                  }
+                                else if (value == "fail")
+                                  {
+                                    showCustom(
+                                        context, "이메일 또는 비밀번호를 다시 확인해주세요.")
+                                  }
+                                else
+                                  showCustom(context, "이메일 또는 비밀번호를 다시 확인해주세요.")
+                              })
+                          : null,
                       style: ElevatedButton.styleFrom(
                           splashFactory: NoSplash.splashFactory,
                           backgroundColor: Colors.black,
@@ -112,6 +206,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     height: 10,
                   ),
                   Container(
+                    padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
@@ -120,7 +215,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             child: TextButton(
                               child: const Text(
                                 "이메일 찾기",
-                                style: TextStyle(fontSize: 15),
+                                style: TextStyle(fontSize: 14),
                               ),
                               onPressed: () {
                                 Navigator.push(
@@ -144,7 +239,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             child: TextButton(
                               child: const Text(
                                 "비밀번호 찾기",
-                                style: TextStyle(fontSize: 15),
+                                style: TextStyle(fontSize: 14),
                               ),
                               onPressed: () {
                                 Navigator.push(
@@ -169,7 +264,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             child: TextButton(
                               child: const Text(
                                 "회원가입",
-                                style: TextStyle(fontSize: 15),
+                                style: TextStyle(fontSize: 14),
                               ),
                               onPressed: () {
                                 Navigator.push(
@@ -193,77 +288,6 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
         ),
       ),
-    );
-  }
-
-  Widget EmailInput() {
-    return TextFormField(
-      maxLines: 1,
-      keyboardType: TextInputType.emailAddress,
-      autocorrect: false,
-      decoration: InputDecoration(
-          contentPadding: EdgeInsets.symmetric(vertical: 20, horizontal: 15),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(5.0),
-            borderSide: BorderSide(color: Colors.black, width: 2.0),
-          ),
-          enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(5.0),
-              borderSide: BorderSide(
-                  color: Color.fromRGBO(125, 125, 125, 0.4), width: 2.0)),
-          hintText: 'Email',
-          suffixIcon: EmailController.text.length > 0
-              ? IconButton(
-                  icon: Icon(Icons.cancel),
-                  color: Colors.grey,
-                  highlightColor: Colors.transparent,
-                  splashColor: Colors.transparent,
-                  onPressed: () {
-                    EmailController.clear();
-                    setState(() {});
-                  },
-                )
-              : null),
-      controller: EmailController,
-      onChanged: (text) {
-        setState(() {});
-      },
-    );
-  }
-
-  Widget PasswordInput() {
-    return TextFormField(
-      style: TextStyle(fontFamily: ''),
-      maxLines: 1,
-      keyboardType: TextInputType.visiblePassword,
-      autocorrect: false,
-      obscureText: _passwordVisible,
-      decoration: InputDecoration(
-        contentPadding: EdgeInsets.symmetric(vertical: 20, horizontal: 15),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(5.0),
-          borderSide: BorderSide(color: Colors.black, width: 2.0),
-        ),
-        enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(5.0),
-            borderSide: BorderSide(
-                color: Color.fromRGBO(125, 125, 125, 0.4), width: 2.0)),
-        hintText: 'Password',
-        suffixIcon: IconButton(
-          icon: _passwordVisible
-              ? Icon(Icons.visibility_off)
-              : Icon(Icons.visibility),
-          color: Colors.grey,
-          highlightColor: Colors.transparent,
-          splashColor: Colors.transparent,
-          onPressed: (() {
-            setState(() {
-              _passwordVisible = !_passwordVisible;
-            });
-          }),
-        ),
-      ),
-      controller: PWController,
     );
   }
 }
@@ -293,7 +317,7 @@ showCustom(BuildContext context, String msg) {
   );
   fToast.showToast(
     child: toast,
-    toastDuration: const Duration(seconds: 2),
+    toastDuration: const Duration(seconds: 3),
     gravity: ToastGravity.BOTTOM,
   );
 }

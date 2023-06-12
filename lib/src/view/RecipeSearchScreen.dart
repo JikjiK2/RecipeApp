@@ -86,12 +86,6 @@ class _RecipeSearchScreenState extends State<RecipeSearchScreen> {
               const SizedBox(
                 height: 150.0,
               ),
-              const Text(
-                "TextField의 단어가 포함된 요리 리스트 출력",
-                style: TextStyle(
-                  fontSize: 20.0,
-                ),
-              ),
             ],
           ),
         ),

@@ -68,8 +68,7 @@ class SplashProvider extends ChangeNotifier {
       MaList.add(List.generate(manualNum,
           (j) => [parsingData["COOKRCP01"]["row"][i]["MANUAL0${j + 1}"]]));
       MaImg.add(List.generate(manualNum,
-          (j) => [parsingData["COOKRCP01"]["row"][i]["MANUAL0${j + 1}"]]));
+          (j) => [parsingData["COOKRCP01"]["row"][i]["MANUAL_IMG0${j + 1}"]]));
     }
-    print(cook.length);
   }
 }
