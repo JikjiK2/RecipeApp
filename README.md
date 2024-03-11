@@ -18,7 +18,7 @@
 - 기대 효과
     - 사용자들이 가지고 있는 재료로 다양한 요리를 쉽게 찾을 수 있어 더 많은 요리 도전을 하게 되고, 요리에 대한 흥미와 자신감을 높일 수 있습니다.
 
-![요리레시피앱.png](https://github.com/JikjiK2/RecipeApp/assets/%EC%9A%94%EB%A6%AC%EB%A0%88%EC%8B%9C%ED%94%BC%EC%95%B1.png)
+![요리레시피앱.png](https://github.com/JikjiK2/RecipeApp/assets/117745906/5c44daa0-704b-495b-b103-23e598a8261f)
 
 ### ✔ 배운점
 
