@@ -1,16 +1,23 @@
-# cook_app_project
+# 요리 레시피 앱
 
-A new Flutter project.
+생성일: 2023년 4월 10일 → 2023년 6월 12일
+태그: Dart, FireBase, Flutter
+한 줄 설명: 재료 검색 시 관련된 요리 레시피 알려주는 앱
+개발 인원(역할): 1명
+Github: https://github.com/JikjiK2/RecipeApp
 
-## Getting Started
+### 📖 내용
 
-This project is a starting point for a Flutter application.
+- 선정 배경
+    - 요리에 관심이 많은 사용자들이 자신의 냉장고나 주방 재고를 활용하여 쉽게 요리를 할 수 있도록 도와주기 위해 개발하였습니다.
+- 서비스 대상
+    - 요리에 관심이 있는 분들
+    - 바쁜 일상 속에서 간편하게 요리를 하고자 하는 분들
+- 기대 효과
+    - 사용자들이 가지고 있는 재료로 다양한 요리를 쉽게 찾을 수 있어 더 많은 요리 도전을 하게 되고, 요리에 대한 흥미와 자신감을 높일 수 있습니다.
 
-A few resources to get you started if this is your first Flutter project:
+![요리레시피앱.png](%E1%84%8B%E1%85%AD%E1%84%85%E1%85%B5%20%E1%84%85%E1%85%A6%E1%84%89%E1%85%B5%E1%84%91%E1%85%B5%20%E1%84%8B%E1%85%A2%E1%86%B8%20cefff633eb70477990beb9bb76ee26ac/%25EC%259A%2594%25EB%25A6%25AC%25EB%25A0%2588%25EC%258B%259C%25ED%2594%25BC%25EC%2595%25B1.png)
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+### ✔ 배운점
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- Provider와 같은 디자인 패턴을 활용하면 앱의 상태 관리를 보다 효율적으로 다룰 수 있겠구나를 직접 느꼈습니다.
