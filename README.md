@@ -1,10 +1,12 @@
 # 요리 레시피 앱
 
 생성일: 2023년 4월 10일 → 2023년 6월 12일
+
 태그: Dart, FireBase, Flutter
+
 한 줄 설명: 재료 검색 시 관련된 요리 레시피 알려주는 앱
+
 개발 인원(역할): 1명
-Github: https://github.com/JikjiK2/RecipeApp
 
 ### 📖 내용
 
@@ -16,7 +18,7 @@ Github: https://github.com/JikjiK2/RecipeApp
 - 기대 효과
     - 사용자들이 가지고 있는 재료로 다양한 요리를 쉽게 찾을 수 있어 더 많은 요리 도전을 하게 되고, 요리에 대한 흥미와 자신감을 높일 수 있습니다.
 
-![요리레시피앱.png](assets/%EC%9A%94%EB%A6%AC%EB%A0%88%EC%8B%9C%ED%94%BC%EC%95%B1.png)
+![요리레시피앱.png](https://github.com/JikjiK2/RecipeApp/assets/%EC%9A%94%EB%A6%AC%EB%A0%88%EC%8B%9C%ED%94%BC%EC%95%B1.png)
 
 ### ✔ 배운점
 
